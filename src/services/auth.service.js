@@ -3,9 +3,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
 
-const registerUser = async (email, password) => {
+const registerUser = async (username, email, password) => {
+  if (!username || !email || !password) {
+    throw new Error("All fields (username, email, password) are required");
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
-  return await userModel.createUser(email, hashedPassword);
+  return await userModel.createUser(username, email, hashedPassword);
 };
 
 const authenticateUser = async (email, password) => {

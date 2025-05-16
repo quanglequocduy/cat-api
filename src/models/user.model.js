@@ -18,10 +18,10 @@ const getUserByEmail = async (email) => {
   return result.rows[0];
 };
 
-const createUser = async (email, hashedPassword) => {
+const createUser = async (username, email, hashedPassword) => {
   const result = await pool.query(
-    "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
-    [email, hashedPassword]
+    "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email",
+    [username, email, hashedPassword]
   );
   return result.rows[0];
 };

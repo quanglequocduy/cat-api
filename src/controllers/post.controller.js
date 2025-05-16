@@ -3,14 +3,14 @@ const postService = require("../services/post.service");
 const create = async (req, res) => {
   try {
     const { title, content, category_id } = req.body;
-    const imageUrl = req.file ? req.file.path : null;
+    const imageUrl = req.file?.path || req.file?.url || null;
 
     const post = await postService.createPost({
       title,
       content,
-      category_id,
-      image_url: imageUrl,
-      user_id: req.user.id,
+      categoryId: category_id,
+      imageUrl: imageUrl,
+      userId: req.user.id,
     });
 
     res.status(201).json(post);

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const postController = require("../controllers/post.controller");
 const upload = require("../middlewares/upload");
-const authenticate = require("../middlewares/authenticate");
+const authenticate = require("../middlewares/auth.middleware");
 
 router.post("/", authenticate, upload.single("image"), postController.create);
 router.get("/", postController.getAll);
