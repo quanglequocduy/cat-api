@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 
+const healthRoute = require("./routes/health.route");
 const authRoutes = require("./routes/auth.route");
 const postRoutes = require("./routes/post.route");
 const categoryRoutes = require("./routes/category.route");
@@ -8,6 +9,10 @@ const categoryRoutes = require("./routes/category.route");
 const app = express();
 app.use(express.json());
 
+// Health check route
+app.use("/api/health", healthRoute);
+
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/categories", categoryRoutes);
