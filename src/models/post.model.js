@@ -1,0 +1,54 @@
+const pool = require("../config/db");
+const slugify = require("slugify");
+
+// Tạo bài viết mới, thêm categoryId và imageUrl vào
+const createPost = async ({ title, content, userId, categoryId = null, imageUrl = null }) => {
+  const slug = slugify(title, { lower: true, strict: true });
+  
+  const result = await pool.query(
+    `INSERT INTO posts (title, slug, content, author_id, category_id, image_url) 
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+    [title, slug, content, userId, categoryId, imageUrl]
+  );
+  return result.rows[0];
+};
+
+// Lấy tất cả bài viết
+const getAllPosts = async () => {
+  const result = await pool.query(
+    "SELECT * FROM posts ORDER BY created_at DESC"
+  );
+  return result.rows;
+};
+
+// Lấy bài viết theo id
+const getPostById = async (id) => {
+  const result = await pool.query("SELECT * FROM posts WHERE id = $1", [id]);
+  return result.rows[0];
+};
+
+// Cập nhật bài viết, có thể cập nhật category và imageUrl luôn
+const updatePost = async (id, { title, content, categoryId = null, imageUrl = null }) => {
+  const slug = slugify(title, { lower: true, strict: true });
+  
+  const result = await pool.query(
+    `UPDATE posts 
+     SET title = $1, slug = $2, content = $3, category_id = $4, image_url = $5, updated_at = NOW()
+     WHERE id = $6 RETURNING *`,
+    [title, slug, content, categoryId, imageUrl, id]
+  );
+  return result.rows[0];
+};
+
+// Xóa bài viết theo id
+const deletePost = async (id) => {
+  await pool.query("DELETE FROM posts WHERE id = $1", [id]);
+};
+
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+  deletePost,
+};
