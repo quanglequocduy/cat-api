@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 
 const healthRoute = require("./routes/health.route");
@@ -7,6 +8,7 @@ const postRoutes = require("./routes/post.route");
 const categoryRoutes = require("./routes/category.route");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Health check route
