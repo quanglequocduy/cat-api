@@ -44,10 +44,14 @@ const getOne = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, category_id } = req.body;
+    const imageUrl = req.file?.path || req.file?.url || null;
+
     const post = await postService.updatePost(req.params.id, {
       title,
       content,
+      categoryId: category_id,
+      imageUrl,
     });
     res.json(post);
   } catch (err) {
