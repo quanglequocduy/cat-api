@@ -20,7 +20,6 @@ const create = async (req, res) => {
   }
 };
 
-
 const getAll = async (req, res) => {
   try {
     const posts = await postService.getAllPosts();
@@ -45,14 +44,17 @@ const getOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { title, content, category_id } = req.body;
-    const imageUrl = req.file?.path || req.file?.url || null;
-
-    const post = await postService.updatePost(req.params.id, {
+    const updateData = {
       title,
       content,
       categoryId: category_id,
-      imageUrl,
-    });
+    };
+
+    if (req.file && (req.file.path || req.file.url)) {
+      updateData.imageUrl = req.file.path || req.file.url;
+    }
+
+    const post = await postService.updatePost(req.params.id, updateData);
     res.json(post);
   } catch (err) {
     console.error(err);
