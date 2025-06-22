@@ -23,7 +23,7 @@ const createPost = async ({
 // Lấy tất cả bài viết
 const getAllPosts = async () => {
   const result = await pool.query(
-    "SELECT * FROM posts ORDER BY created_at DESC"
+    "SELECT * FROM posts WHERE status = 'published' ORDER BY created_at DESC"
   );
   return result.rows;
 };
