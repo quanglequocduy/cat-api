@@ -2,7 +2,7 @@ const postService = require("../services/post.service");
 
 const create = async (req, res) => {
   try {
-    const { title, content, category_id } = req.body;
+    const { title, content, category_id, status } = req.body;
     const imageUrl = req.file?.path || req.file?.url || null;
 
     const post = await postService.createPost({
@@ -11,6 +11,7 @@ const create = async (req, res) => {
       categoryId: category_id,
       imageUrl: imageUrl,
       userId: req.user.id,
+      status: status || "draft",
     });
 
     res.status(201).json(post);
@@ -43,11 +44,12 @@ const getOne = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { title, content, category_id } = req.body;
+    const { title, content, category_id, status } = req.body;
     const updateData = {
       title,
       content,
       categoryId: category_id,
+      status,
     };
 
     if (req.file && (req.file.path || req.file.url)) {
