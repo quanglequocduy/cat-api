@@ -8,13 +8,14 @@ const createPost = async ({
   userId,
   categoryId = null,
   imageUrl = null,
+  status = "draft",
 }) => {
   const slug = slugify(title, { lower: true, strict: true });
 
   const result = await pool.query(
-    `INSERT INTO posts (title, slug, content, author_id, category_id, image_url) 
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-    [title, slug, content, userId, categoryId, imageUrl]
+    `INSERT INTO posts (title, slug, content, author_id, category_id, image_url, status) 
+     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+    [title, slug, content, userId, categoryId, imageUrl, status]
   );
   return result.rows[0];
 };
@@ -34,7 +35,10 @@ const getPostById = async (id) => {
 };
 
 // Cập nhật bài viết, có thể cập nhật category và imageUrl luôn
-const updatePost = async (id, { title, content, categoryId, imageUrl }) => {
+const updatePost = async (
+  id,
+  { title, content, categoryId, imageUrl, status }
+) => {
   const slug = slugify(title, { lower: true, strict: true });
 
   // Xây dựng query động
@@ -45,6 +49,12 @@ const updatePost = async (id, { title, content, categoryId, imageUrl }) => {
   if (imageUrl !== undefined) {
     query += `, image_url = $${paramIndex}`;
     params.splice(paramIndex - 1, 0, imageUrl);
+    paramIndex++;
+  }
+
+  if (status !== undefined) {
+    query += `, status = $${paramIndex}`;
+    params.splice(paramIndex - 1, 0, status);
     paramIndex++;
   }
 
