@@ -23,14 +23,7 @@ const create = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const ADMIN_ID = 2;
-    let posts;
-    console.log(`Req user: ${JSON.stringify(req.user)}`);
-    if (req.user && req.user.id === ADMIN_ID) {
-      posts = await postService.getAllPosts(); // Lấy tất cả status
-    } else {
-      posts = await postService.getAllPosts({ status: "published" }); // Chỉ lấy published
-    }
+    const posts = await postService.getAllPosts();
     res.json(posts);
   } catch (err) {
     console.error(err);
