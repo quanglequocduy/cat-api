@@ -21,14 +21,9 @@ const createPost = async ({
 };
 
 // Lấy tất cả bài viết
-const getAllPosts = async (filter = {}) => {
+const getAllPosts = async () => {
   let query = "SELECT * FROM posts";
   const params = [];
-
-  if (filter.status) {
-    query += " WHERE status = $1";
-    params.push(filter.status);
-  }
 
   query += " ORDER BY created_at DESC";
 
