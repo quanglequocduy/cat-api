@@ -21,10 +21,18 @@ const createPost = async ({
 };
 
 // Lấy tất cả bài viết
-const getAllPosts = async () => {
-  const result = await pool.query(
-    "SELECT * FROM posts WHERE status = 'published' ORDER BY created_at DESC"
-  );
+const getAllPosts = async (filter = {}) => {
+  let query = "SELECT * FROM posts";
+  const params = [];
+
+  if (filter.status) {
+    query += " WHERE status = $1";
+    params.push(filter.status);
+  }
+
+  query += " ORDER BY created_at DESC";
+
+  const result = await pool.query(query, params);
   return result.rows;
 };
 

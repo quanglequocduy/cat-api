@@ -23,7 +23,12 @@ const create = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const posts = await postService.getAllPosts();
+    let posts;
+    if (req.user && req.user.role === "admin") {
+      posts = await postService.getAllPosts(); // Lấy tất cả status
+    } else {
+      posts = await postService.getAllPosts({ status: "published" }); // Chỉ lấy published
+    }
     res.json(posts);
   } catch (err) {
     console.error(err);
