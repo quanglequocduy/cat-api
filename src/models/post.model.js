@@ -37,6 +37,12 @@ const getPostById = async (id) => {
   return result.rows[0];
 };
 
+// Lấy bài viết theo slug
+const getPostBySlug = async (slug) => {
+  const result = await pool.query("SELECT * FROM posts WHERE slug = $1", [slug]);
+  return result.rows[0];
+};
+
 // Cập nhật bài viết, có thể cập nhật category và imageUrl luôn
 const updatePost = async (
   id,
@@ -76,6 +82,7 @@ module.exports = {
   createPost,
   getAllPosts,
   getPostById,
+  getPostBySlug,
   updatePost,
   deletePost,
 };

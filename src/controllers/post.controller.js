@@ -42,6 +42,17 @@ const getOne = async (req, res) => {
   }
 };
 
+const getOneBySlug = async (req, res) => {
+  try {
+    const post = await postService.getPostBySlug(req.params.slug);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Fetch post failed" });
+  }
+};
+
 const update = async (req, res) => {
   try {
     const { title, content, category_id, status } = req.body;
@@ -74,4 +85,4 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { create, getAll, getOne, update, remove };
+module.exports = { create, getAll, getOne, getOneBySlug, update, remove };
