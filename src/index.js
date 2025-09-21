@@ -33,5 +33,5 @@ app.use("/api/categories", categoryRoutes);
 
 app.get("/ping", (req, res) => res.json({ message: "pong" }));
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
