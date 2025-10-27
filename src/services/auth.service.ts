@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { createUser, getUserByEmail } from "../models/user.model.js";
 
-const registerUser = async (
+export const registerUser = async (
   username: string,
   email: string,
   password: string
@@ -15,7 +15,7 @@ const registerUser = async (
   return await createUser(username, email, hashedPassword);
 };
 
-const authenticateUser = async (email: string, password: string) => {
+export const authenticateUser = async (email: string, password: string) => {
   const user = await getUserByEmail(email);
   if (!user) return null;
 
@@ -28,5 +28,3 @@ const authenticateUser = async (email: string, password: string) => {
 
   return { token };
 };
-
-module.exports = { registerUser, authenticateUser };
