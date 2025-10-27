@@ -1,24 +1,28 @@
 // auth.service.js
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const userModel = require("../models/user.model");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { createUser, getUserByEmail } from "../models/user.model.js";
 
-const registerUser = async (username, email, password) => {
+const registerUser = async (
+  username: string,
+  email: string,
+  password: string
+) => {
   if (!username || !email || !password) {
     throw new Error("All fields (username, email, password) are required");
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  return await userModel.createUser(username, email, hashedPassword);
+  return await createUser(username, email, hashedPassword);
 };
 
-const authenticateUser = async (email, password) => {
-  const user = await userModel.getUserByEmail(email);
+const authenticateUser = async (email: string, password: string) => {
+  const user = await getUserByEmail(email);
   if (!user) return null;
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) return null;
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
     expiresIn: "1d",
   });
 

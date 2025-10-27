@@ -1,12 +1,12 @@
-const categoryModel = require("../models/category.model");
+import {
+  getAllCategories,
+  getCategoryById,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "../models/category.model.js";
 
-const getAllCategories = categoryModel.getAllCategories;
-const getCategoryById = categoryModel.getCategoryById;
-const createCategory = categoryModel.createCategory;
-const updateCategory = categoryModel.updateCategory;
-const deleteCategory = categoryModel.deleteCategory;
-
-module.exports = {
+export default {
   getAllCategories,
   getCategoryById,
   createCategory,
