@@ -36,5 +36,5 @@ export const updateCategory = async (id: string, name: string) => {
 
 // Xóa category theo id
 export const deleteCategory = async (id: string) => {
-  await pool.query("DELETE FROM categories WHERE id = $1", [id]);
+  return await pool.query("DELETE FROM categories WHERE id = $1", [id]);
 };
