@@ -1,13 +1,13 @@
 import express from "express";
 const router = express.Router();
-import authenticate from "../middlewares/auth.middleware";
+import authenticate from "../middlewares/auth.middleware.js";
 import {
   getCategories,
   getCategory,
   addCategory,
   updateCategory,
   deleteCategory,
-} from "../controllers/category.controller";
+} from "../controllers/category.controller.js";
 
 router.get("/", getCategories);
 router.get("/:id", getCategory);
