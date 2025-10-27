@@ -1,13 +1,13 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const authenticate = require("../middlewares/auth.middleware");
-const {
+import authenticate from "../middlewares/auth.middleware";
+import {
   getCategories,
   getCategory,
   addCategory,
   updateCategory,
   deleteCategory,
-} = require("../controllers/category.controller");
+} from "../controllers/category.controller";
 
 router.get("/", getCategories);
 router.get("/:id", getCategory);
@@ -17,4 +17,4 @@ router.post("/", authenticate, addCategory);
 router.put("/:id", authenticate, updateCategory);
 router.delete("/:id", authenticate, deleteCategory);
 
-module.exports = router;
+export default router;
