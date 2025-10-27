@@ -17,6 +17,7 @@ export const createPost = async ({
   imageUrl?: string | null;
   status?: string;
 }) => {
+  // @ts-ignore
   const slug = slugify(title, { lower: true, strict: true });
 
   const result = await pool.query(
@@ -66,6 +67,7 @@ export const updatePost = async (
     status?: string;
   }
 ) => {
+  // @ts-ignore
   const slug = slugify(title, { lower: true, strict: true });
 
   // Xây dựng query động
