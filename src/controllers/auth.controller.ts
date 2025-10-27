@@ -1,6 +1,7 @@
-const { authenticateUser, registerUser } = require("../services/auth.service");
+import { authenticateUser, registerUser } from "../services/auth.service";
+import { Request, Response } from "express";
 
-const register = async (req, res) => {
+const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -8,12 +9,12 @@ const register = async (req, res) => {
     }
     const user = await registerUser(username, email, password);
     res.status(201).json(user);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 };
 
-const login = async (req, res) => {
+const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const result = await authenticateUser(email, password);

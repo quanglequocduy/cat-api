@@ -1,24 +1,30 @@
 const pool = require("../config/db");
 
 // Lấy tất cả users
-const getAllUsers = async () => {
+export const getAllUsers = async () => {
   const result = await pool.query("SELECT * FROM users ORDER BY id");
   return result.rows;
 };
 
 // Lấy user theo id
-const getUserById = async (id) => {
+export const getUserById = async (id: string) => {
   const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
   return result.rows[0];
 };
 
 // Lấy user theo email (phục vụ cho login)
-const getUserByEmail = async (email) => {
-  const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+export const getUserByEmail = async (email: string) => {
+  const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+    email,
+  ]);
   return result.rows[0];
 };
 
-const createUser = async (username, email, hashedPassword) => {
+export const createUser = async (
+  username: string,
+  email: string,
+  hashedPassword: string
+) => {
   const result = await pool.query(
     "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email",
     [username, email, hashedPassword]
@@ -27,7 +33,10 @@ const createUser = async (username, email, hashedPassword) => {
 };
 
 // Cập nhật user theo id (chỉ update password và username)
-const updateUser = async (id, { username, password }) => {
+export const updateUser = async (
+  id: string,
+  { username, password }: { username: string; password: string }
+) => {
   const result = await pool.query(
     `UPDATE users 
      SET username = $1, password = $2, updated_at = NOW() 
@@ -38,15 +47,6 @@ const updateUser = async (id, { username, password }) => {
 };
 
 // Xóa user theo id
-const deleteUser = async (id) => {
+export const deleteUser = async (id: string) => {
   await pool.query("DELETE FROM users WHERE id = $1", [id]);
-};
-
-module.exports = {
-  getAllUsers,
-  getUserById,
-  getUserByEmail,
-  createUser,
-  updateUser,
-  deleteUser,
 };

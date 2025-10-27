@@ -1,14 +1,21 @@
-const pool = require("../config/db");
-const slugify = require("slugify");
+import pool from "../config/db.js";
+import slugify from "slugify";
 
 // Tạo bài viết mới, thêm categoryId và imageUrl vào
-const createPost = async ({
+export const createPost = async ({
   title,
   content,
   userId,
   categoryId = null,
   imageUrl = null,
   status = "draft",
+}: {
+  title: string;
+  content: string;
+  userId: string;
+  categoryId?: string | null;
+  imageUrl?: string | null;
+  status?: string;
 }) => {
   const slug = slugify(title, { lower: true, strict: true });
 
@@ -21,32 +28,43 @@ const createPost = async ({
 };
 
 // Lấy tất cả bài viết
-const getAllPosts = async () => {
-  let query = "SELECT * FROM posts";
-  const params = [];
+export const getAllPosts = async () => {
+  let query = "SELECT * FROM posts ORDER BY created_at DESC";
 
-  query += " ORDER BY created_at DESC";
-
-  const result = await pool.query(query, params);
+  const result = await pool.query(query);
   return result.rows;
 };
 
 // Lấy bài viết theo id
-const getPostById = async (id) => {
+export const getPostById = async (id: string) => {
   const result = await pool.query("SELECT * FROM posts WHERE id = $1", [id]);
   return result.rows[0];
 };
 
 // Lấy bài viết theo slug
-const getPostBySlug = async (slug) => {
-  const result = await pool.query("SELECT * FROM posts WHERE slug = $1", [slug]);
+export const getPostBySlug = async (slug: string) => {
+  const result = await pool.query("SELECT * FROM posts WHERE slug = $1", [
+    slug,
+  ]);
   return result.rows[0];
 };
 
 // Cập nhật bài viết, có thể cập nhật category và imageUrl luôn
-const updatePost = async (
-  id,
-  { title, content, categoryId, imageUrl, status }
+export const updatePost = async (
+  id: string,
+  {
+    title,
+    content,
+    categoryId,
+    imageUrl,
+    status,
+  }: {
+    title: string;
+    content: string;
+    categoryId: string | null;
+    imageUrl?: string | null;
+    status?: string;
+  }
 ) => {
   const slug = slugify(title, { lower: true, strict: true });
 
@@ -74,15 +92,6 @@ const updatePost = async (
 };
 
 // Xóa bài viết theo id
-const deletePost = async (id) => {
+export const deletePost = async (id: string) => {
   await pool.query("DELETE FROM posts WHERE id = $1", [id]);
-};
-
-module.exports = {
-  createPost,
-  getAllPosts,
-  getPostById,
-  getPostBySlug,
-  updatePost,
-  deletePost,
 };

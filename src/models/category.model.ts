@@ -1,19 +1,21 @@
-const pool = require("../config/db");
+import pool from "../config/db.js";
 
 // Lấy tất cả categories
-const getAllCategories = async () => {
+export const getAllCategories = async () => {
   const result = await pool.query("SELECT * FROM categories ORDER BY id");
   return result.rows;
 };
 
 // Lấy categories by Id
-const getCategoryById = async (id) => {
-  const result = await pool.query("SELECT * FROM categories WHERE id = $1", [id]);
+export const getCategoryById = async (id: string) => {
+  const result = await pool.query("SELECT * FROM categories WHERE id = $1", [
+    id,
+  ]);
   return result.rows[0];
 };
 
 // Tạo category mới
-const createCategory = async (name) => {
+export const createCategory = async (name: string) => {
   const result = await pool.query(
     "INSERT INTO categories(name) VALUES($1) RETURNING *",
     [name]
@@ -22,7 +24,7 @@ const createCategory = async (name) => {
 };
 
 // Cập nhật category theo id
-const updateCategory = async (id, name) => {
+export const updateCategory = async (id: string, name: string) => {
   const result = await pool.query(
     `UPDATE categories 
      SET name = $1, updated_at = NOW() 
@@ -33,14 +35,6 @@ const updateCategory = async (id, name) => {
 };
 
 // Xóa category theo id
-const deleteCategory = async (id) => {
+export const deleteCategory = async (id: string) => {
   await pool.query("DELETE FROM categories WHERE id = $1", [id]);
-};
-
-module.exports = {
-  getAllCategories,
-  getCategoryById,
-  createCategory,
-  updateCategory,
-  deleteCategory,
 };
