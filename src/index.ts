@@ -3,10 +3,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
-import healthRoute from "./routes/health.route";
-import authRoutes from "./routes/auth.route";
-import postRoutes from "./routes/post.route";
-import categoryRoutes from "./routes/category.route";
+import healthRoute from "./routes/health.route.js";
+import authRoutes from "./routes/auth.route.js";
+import postRoutes from "./routes/post.route.js";
+import categoryRoutes from "./routes/category.route.js";
 
 const app = express();
 app.use(cors());

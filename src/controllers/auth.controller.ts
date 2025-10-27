@@ -1,4 +1,4 @@
-import { authenticateUser, registerUser } from "../services/auth.service";
+import { authenticateUser, registerUser } from "../services/auth.service.js";
 import { Request, Response } from "express";
 
 export const register = async (req: Request, res: Response) => {
