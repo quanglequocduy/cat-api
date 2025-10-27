@@ -1,7 +1,7 @@
 import { authenticateUser, registerUser } from "../services/auth.service";
 import { Request, Response } from "express";
 
-const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -14,7 +14,7 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
-const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const result = await authenticateUser(email, password);
@@ -27,5 +27,3 @@ const login = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Login failed" });
   }
 };
-
-module.exports = { register, login };

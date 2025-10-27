@@ -1,6 +1,7 @@
-const categoryService = require("../services/category.service");
+import categoryService from "../services/category.service";
+import { Request, Response } from "express";
 
-const getCategories = async (req, res) => {
+export const getCategories = async (req: Request, res: Response) => {
   try {
     const categories = await categoryService.getAllCategories();
     res.json(categories);
@@ -10,9 +11,14 @@ const getCategories = async (req, res) => {
   }
 };
 
-const getCategory = async (req, res) => {
+export const getCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Category ID is required" });
+    }
+
     const category = await categoryService.getCategoryById(id);
 
     if (!category) {
@@ -26,7 +32,7 @@ const getCategory = async (req, res) => {
   }
 };
 
-const addCategory = async (req, res) => {
+export const addCategory = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
     const category = await categoryService.createCategory(name);
@@ -37,10 +43,14 @@ const addCategory = async (req, res) => {
   }
 };
 
-const updateCategory = async (req, res) => {
+export const updateCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Category ID is required" });
+    }
 
     const updatedCategory = await categoryService.updateCategory(id, name);
 
@@ -55,9 +65,13 @@ const updateCategory = async (req, res) => {
   }
 };
 
-const deleteCategory = async (req, res) => {
+export const deleteCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Category ID is required" });
+    }
 
     const deleted = await categoryService.deleteCategory(id);
 
@@ -70,12 +84,4 @@ const deleteCategory = async (req, res) => {
     console.error("Error deleting category:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-};
-
-module.exports = {
-  getCategories,
-  getCategory,
-  addCategory,
-  updateCategory,
-  deleteCategory,
 };
