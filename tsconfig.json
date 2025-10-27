@@ -5,10 +5,15 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
+    "allowJs": true,
+    "checkJs": false,
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
+    "module": "CommonJS",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     // For nodejs:
     "lib": ["esnext"],
     "types": ["node"],
@@ -34,7 +39,7 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    // "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
@@ -43,5 +48,6 @@
     // For typeORM
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-  }
+  },
+  "include": ["src/**/*"]
 }
