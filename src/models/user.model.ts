@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+import pool from "../config/db.js";
 
 // Lấy tất cả users
 export const getAllUsers = async () => {
