@@ -7,6 +7,7 @@ import healthRoute from "./routes/health.route.js";
 import authRoutes from "./routes/auth.route.js";
 import postRoutes from "./routes/post.route.js";
 import categoryRoutes from "./routes/category.route.js";
+import { AppDataSource } from "./config/db.js";
 
 const app = express();
 app.use(cors());
@@ -35,4 +36,7 @@ app.use("/api/categories", categoryRoutes);
 app.get("/ping", (req, res) => res.json({ message: "pong" }));
 
 const PORT = 3001;
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+AppDataSource.initialize().then(() => {
+  app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+});
