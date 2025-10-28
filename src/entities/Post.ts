@@ -57,4 +57,7 @@ export class Post {
 
   @Column({ type: "integer" })
   author_id: number;
+
+  @Column({ type: "text", nullable: true })
+  page_title?: string;
 }
