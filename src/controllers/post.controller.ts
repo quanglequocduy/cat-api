@@ -40,7 +40,7 @@ export const getOne = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Post ID is required" });
     }
 
-    const post = await postService.getPostById(id);
+    const post = await postService.getPostById(Number(id));
     if (!post) return res.status(404).json({ error: "Post not found" });
     res.json(post);
   } catch (err) {
@@ -85,7 +85,7 @@ export const update = async (req: Request, res: Response) => {
       updateData.imageUrl = req.file.path;
     }
 
-    const post = await postService.updatePost(id, updateData);
+    const post = await postService.updatePost(Number(id), updateData);
     res.json(post);
   } catch (err) {
     console.error(err);
@@ -101,7 +101,7 @@ export const remove = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Post ID is required" });
     }
 
-    await postService.deletePost(id);
+    await postService.deletePost(Number(id));
     res.json({ message: "Post deleted" });
   } catch (err) {
     console.error(err);

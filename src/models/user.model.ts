@@ -1,23 +1,23 @@
-import pool from "../config/db.js";
+import { AppDataSource } from "../config/db.js";
+import { User } from "../entities/User.js";
+
+const userRepository = AppDataSource.getRepository(User);
 
 // Lấy tất cả users
 export const getAllUsers = async () => {
-  const result = await pool.query("SELECT * FROM users ORDER BY id");
-  return result.rows;
+  return await userRepository.find({
+    order: { id: "ASC" },
+  });
 };
 
 // Lấy user theo id
-export const getUserById = async (id: string) => {
-  const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-  return result.rows[0];
+export const getUserById = async (id: number) => {
+  return await userRepository.findOneBy({ id });
 };
 
 // Lấy user theo email (phục vụ cho login)
 export const getUserByEmail = async (email: string) => {
-  const result = await pool.query("SELECT * FROM users WHERE email = $1", [
-    email,
-  ]);
-  return result.rows[0];
+  return await userRepository.findOneBy({ email });
 };
 
 export const createUser = async (
@@ -25,28 +25,40 @@ export const createUser = async (
   email: string,
   hashedPassword: string
 ) => {
-  const result = await pool.query(
-    "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email",
-    [username, email, hashedPassword]
-  );
-  return result.rows[0];
+  const user = userRepository.create({
+    username,
+    email,
+    password: hashedPassword,
+  });
+
+  const savedUser = await userRepository.save(user);
+  return {
+    id: savedUser.id,
+    username: savedUser.username,
+    email: savedUser.email,
+  };
 };
 
 // Cập nhật user theo id (chỉ update password và username)
 export const updateUser = async (
-  id: string,
+  id: number,
   { username, password }: { username: string; password: string }
 ) => {
-  const result = await pool.query(
-    `UPDATE users 
-     SET username = $1, password = $2, updated_at = NOW() 
-     WHERE id = $3 RETURNING *`,
-    [username, password, id]
-  );
-  return result.rows[0];
+  const user = await userRepository.findOneBy({ id });
+  if (!user) return null;
+
+  user.username = username;
+  user.password = password;
+
+  const savedUser = await userRepository.save(user);
+  return {
+    id: savedUser.id,
+    username: savedUser.username,
+    email: savedUser.email,
+  };
 };
 
 // Xóa user theo id
-export const deleteUser = async (id: string) => {
-  await pool.query("DELETE FROM users WHERE id = $1", [id]);
+export const deleteUser = async (id: number) => {
+  await userRepository.delete(id);
 };

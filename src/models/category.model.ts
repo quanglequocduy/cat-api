@@ -1,40 +1,38 @@
-import pool from "../config/db.js";
+import { AppDataSource } from "../config/db.js";
+import { Category } from "../entities/Category.js";
+
+const categoryRepository = AppDataSource.getRepository(Category);
 
 // Lấy tất cả categories
 export const getAllCategories = async () => {
-  const result = await pool.query("SELECT * FROM categories ORDER BY id");
-  return result.rows;
+  return await categoryRepository.find({
+    order: { id: "ASC" },
+  });
 };
 
 // Lấy categories by Id
-export const getCategoryById = async (id: string) => {
-  const result = await pool.query("SELECT * FROM categories WHERE id = $1", [
-    id,
-  ]);
-  return result.rows[0];
+export const getCategoryById = async (id: number) => {
+  return await categoryRepository.findOne({
+    where: { id },
+  });
 };
 
 // Tạo category mới
 export const createCategory = async (name: string) => {
-  const result = await pool.query(
-    "INSERT INTO categories(name) VALUES($1) RETURNING *",
-    [name]
-  );
-  return result.rows[0];
+  const category = categoryRepository.create({ name });
+  return await categoryRepository.save(category);
 };
 
 // Cập nhật category theo id
-export const updateCategory = async (id: string, name: string) => {
-  const result = await pool.query(
-    `UPDATE categories 
-     SET name = $1, updated_at = NOW() 
-     WHERE id = $2 RETURNING *`,
-    [name, id]
-  );
-  return result.rows[0];
+export const updateCategory = async (id: number, name: string) => {
+  const category = await categoryRepository.findOneBy({ id });
+  if (!category) return null;
+
+  category.name = name;
+  return await categoryRepository.save(category);
 };
 
 // Xóa category theo id
-export const deleteCategory = async (id: string) => {
-  return await pool.query("DELETE FROM categories WHERE id = $1", [id]);
+export const deleteCategory = async (id: number) => {
+  return await categoryRepository.delete({ id });
 };

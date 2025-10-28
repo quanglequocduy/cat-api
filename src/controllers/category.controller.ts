@@ -19,7 +19,7 @@ export const getCategory = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Category ID is required" });
     }
 
-    const category = await categoryService.getCategoryById(id);
+    const category = await categoryService.getCategoryById(Number(id));
 
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
@@ -52,7 +52,10 @@ export const updateCategory = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Category ID is required" });
     }
 
-    const updatedCategory = await categoryService.updateCategory(id, name);
+    const updatedCategory = await categoryService.updateCategory(
+      Number(id),
+      name
+    );
 
     if (!updatedCategory) {
       return res.status(404).json({ message: "Category not found" });
@@ -73,7 +76,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Category ID is required" });
     }
 
-    const deleted = await categoryService.deleteCategory(id);
+    const deleted = await categoryService.deleteCategory(Number(id));
 
     if (!deleted) {
       return res.status(404).json({ message: "Category not found" });

@@ -1,5 +1,13 @@
-import pool from "../config/db.js";
+import { AppDataSource } from "../config/db.js";
+import { Category } from "../entities/Category.js";
+import { Post } from "../entities/Post.js";
+
 import slugify from "slugify";
+import { User } from "../entities/User.js";
+
+const postRepository = AppDataSource.getRepository(Post);
+const categoryRepository = AppDataSource.getRepository(Category);
+const userRepository = AppDataSource.getRepository(User);
 
 // Tạo bài viết mới, thêm categoryId và imageUrl vào
 export const createPost = async ({
@@ -12,47 +20,63 @@ export const createPost = async ({
 }: {
   title: string;
   content: string;
-  userId: string;
-  categoryId?: string | null;
+  userId: number;
+  categoryId?: number | null;
   imageUrl?: string | null;
   status?: string;
 }) => {
   // @ts-ignore
   const slug = slugify(title, { lower: true, strict: true });
 
-  const result = await pool.query(
-    `INSERT INTO posts (title, slug, content, author_id, category_id, image_url, status) 
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-    [title, slug, content, userId, categoryId, imageUrl, status]
-  );
-  return result.rows[0];
+  const user = await userRepository.findOneBy({
+    id: userId,
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const category = categoryId
+    ? await categoryRepository.findOneBy({ id: categoryId })
+    : null;
+
+  const post = postRepository.create({
+    title,
+    slug,
+    content,
+    author: user,
+    category,
+    image_url: imageUrl,
+    status,
+  });
+
+  return await postRepository.save(post);
 };
 
 // Lấy tất cả bài viết
 export const getAllPosts = async () => {
-  let query = "SELECT * FROM posts ORDER BY created_at DESC";
-
-  const result = await pool.query(query);
-  return result.rows;
+  return await postRepository.find({
+    order: { created_at: "DESC" },
+  });
 };
 
 // Lấy bài viết theo id
-export const getPostById = async (id: string) => {
-  const result = await pool.query("SELECT * FROM posts WHERE id = $1", [id]);
-  return result.rows[0];
+export const getPostById = async (id: number) => {
+  return await postRepository.findOne({
+    where: { id },
+  });
 };
 
 // Lấy bài viết theo slug
 export const getPostBySlug = async (slug: string) => {
-  const result = await pool.query("SELECT * FROM posts WHERE slug = $1", [
-    slug,
-  ]);
-  return result.rows[0];
+  return await postRepository.findOne({
+    where: { slug },
+  });
 };
 
 // Cập nhật bài viết, có thể cập nhật category và imageUrl luôn
 export const updatePost = async (
-  id: string,
+  id: number,
   {
     title,
     content,
@@ -62,38 +86,35 @@ export const updatePost = async (
   }: {
     title: string;
     content: string;
-    categoryId: string | null;
-    imageUrl?: string | null;
+    categoryId?: number;
+    imageUrl?: string;
     status?: string;
   }
 ) => {
+  const post = await postRepository.findOneBy({ id });
+  if (!post) return null;
+
   // @ts-ignore
   const slug = slugify(title, { lower: true, strict: true });
 
-  // Xây dựng query động
-  let query = `UPDATE posts SET title = $1, slug = $2, content = $3, category_id = $4`;
-  const params = [title, slug, content, categoryId, id];
-  let paramIndex = 5;
+  post.title = title;
+  post.slug = slug;
+  post.content = content;
 
-  if (imageUrl !== undefined) {
-    query += `, image_url = $${paramIndex}`;
-    params.splice(paramIndex - 1, 0, imageUrl);
-    paramIndex++;
+  if (categoryId) {
+    const category = await categoryRepository.findOneBy({
+      id: categoryId,
+    });
+    post.category = category || null;
   }
 
-  if (status !== undefined) {
-    query += `, status = $${paramIndex}`;
-    params.splice(paramIndex - 1, 0, status);
-    paramIndex++;
-  }
+  if (imageUrl) post.image_url = imageUrl;
+  if (status) post.status = status;
 
-  query += `, updated_at = NOW() WHERE id = $${paramIndex} RETURNING *`;
-
-  const result = await pool.query(query, params);
-  return result.rows[0];
+  return await postRepository.save(post);
 };
 
 // Xóa bài viết theo id
-export const deletePost = async (id: string) => {
-  await pool.query("DELETE FROM posts WHERE id = $1", [id]);
+export const deletePost = async (id: number) => {
+  await postRepository.delete(id);
 };
