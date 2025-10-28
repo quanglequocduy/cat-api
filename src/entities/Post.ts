@@ -44,6 +44,9 @@ export class Post {
   @JoinColumn({ name: "category_id" })
   category: Category | null;
 
+  @Column({ type: "integer", nullable: true })
+  category_id: number | null;
+
   // Relationship: Many posts belong to one author (user)
   @ManyToOne(() => User, {
     nullable: false,
@@ -51,4 +54,7 @@ export class Post {
   })
   @JoinColumn({ name: "author_id" })
   author: User;
+
+  @Column({ type: "integer" })
+  author_id: number;
 }
