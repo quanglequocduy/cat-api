@@ -1,9 +1,10 @@
-const postService = require("../services/post.service");
+import postService from "../services/post.service.js";
+import { Request, Response } from "express";
 
-const create = async (req, res) => {
+export const create = async (req: Request, res: Response) => {
   try {
     const { title, content, category_id, status } = req.body;
-    const imageUrl = req.file?.path || req.file?.url || null;
+    const imageUrl = req.file?.path || null;
 
     const post = await postService.createPost({
       title,
@@ -21,7 +22,7 @@ const create = async (req, res) => {
   }
 };
 
-const getAll = async (req, res) => {
+export const getAll = async (req: Request, res: Response) => {
   try {
     const posts = await postService.getAllPosts();
     res.json(posts);
@@ -31,9 +32,15 @@ const getAll = async (req, res) => {
   }
 };
 
-const getOne = async (req, res) => {
+export const getOne = async (req: Request, res: Response) => {
   try {
-    const post = await postService.getPostById(req.params.id);
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: "Post ID is required" });
+    }
+
+    const post = await postService.getPostById(Number(id));
     if (!post) return res.status(404).json({ error: "Post not found" });
     res.json(post);
   } catch (err) {
@@ -42,9 +49,14 @@ const getOne = async (req, res) => {
   }
 };
 
-const getOneBySlug = async (req, res) => {
+export const getOneBySlug = async (req: Request, res: Response) => {
   try {
-    const post = await postService.getPostBySlug(req.params.slug);
+    const { slug } = req.params;
+    if (!slug) {
+      return res.status(400).json({ error: "Post slug is required" });
+    }
+
+    const post = await postService.getPostBySlug(slug);
     if (!post) return res.status(404).json({ error: "Post not found" });
     res.json(post);
   } catch (err) {
@@ -53,21 +65,27 @@ const getOneBySlug = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
+export const update = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const { title, content, category_id, status } = req.body;
-    const updateData = {
+
+    if (!id) {
+      return res.status(400).json({ error: "Post ID is required" });
+    }
+
+    const updateData: any = {
       title,
       content,
       categoryId: category_id,
       status,
     };
 
-    if (req.file && (req.file.path || req.file.url)) {
-      updateData.imageUrl = req.file.path || req.file.url;
+    if (req.file && req.file.path) {
+      updateData.imageUrl = req.file.path;
     }
 
-    const post = await postService.updatePost(req.params.id, updateData);
+    const post = await postService.updatePost(Number(id), updateData);
     res.json(post);
   } catch (err) {
     console.error(err);
@@ -75,14 +93,18 @@ const update = async (req, res) => {
   }
 };
 
-const remove = async (req, res) => {
+export const remove = async (req: Request, res: Response) => {
   try {
-    await postService.deletePost(req.params.id);
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: "Post ID is required" });
+    }
+
+    await postService.deletePost(Number(id));
     res.json({ message: "Post deleted" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Delete post failed" });
   }
 };
-
-module.exports = { create, getAll, getOne, getOneBySlug, update, remove };
