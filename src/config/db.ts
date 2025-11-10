@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DB_HOST!,
@@ -16,8 +18,13 @@ export const AppDataSource = new DataSource({
       ? { rejectUnauthorized: false }
       : false,
   synchronize: false,
-  entities: ["dist/entities/**/*.js"],
-  migrations: ["dist/migrations/**/*.js"],
+  entities: isProduction
+    ? ["dist/entities/**/*.js"]
+    : ["src/entities/**/*.ts"],
+
+  migrations: isProduction
+    ? ["dist/migrations/**/*.js"]
+    : ["src/migrations/**/*.ts"],
   logging: true,
   // entities: [User, Category, Post],
   // migrations: ["src/migrations/*.ts"],
