@@ -1,9 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { User } from "../entities/User.js";
-import { Category } from "../entities/Category.js";
-import { Post } from "../entities/Post.js";
 
 dotenv.config();
 
@@ -19,6 +16,9 @@ export const AppDataSource = new DataSource({
       ? { rejectUnauthorized: false }
       : false,
   synchronize: false,
-  entities: [User, Category, Post],
+  entities: ["dist/entities/**/*.js", "src/entities/**/*.ts"],
+  migrations: ["dist/migrations/**/*.js", "src/migrations/**/*.ts"],
+  logging: true,
+  // entities: [User, Category, Post],
   // migrations: ["src/migrations/*.ts"],
 });
