@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = true;
 
 export const AppDataSource = new DataSource({
   type: "postgres",
