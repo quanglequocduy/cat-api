@@ -16,8 +16,8 @@ export const AppDataSource = new DataSource({
       ? { rejectUnauthorized: false }
       : false,
   synchronize: false,
-  entities: ["dist/entities/**/*.js", "src/entities/**/*.ts"],
-  migrations: ["dist/migrations/**/*.js", "src/migrations/**/*.ts"],
+  entities: ["dist/entities/**/*.js"],
+  migrations: ["dist/migrations/**/*.js"],
   logging: true,
   // entities: [User, Category, Post],
   // migrations: ["src/migrations/*.ts"],
