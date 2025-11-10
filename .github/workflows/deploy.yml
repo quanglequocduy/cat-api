@@ -30,4 +30,6 @@ jobs:
 
             npm run build
 
+            npm run migration:run:prod
+
             pm2 restart cat-api-backend
