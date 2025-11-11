@@ -18,9 +18,9 @@ export const AppDataSource = new DataSource({
       ? { rejectUnauthorized: false }
       : false,
   synchronize: false,
-  // entities: isProduction
-  //   ? ["dist/entities/**/*.js"]
-  //   : ["src/entities/**/*.ts"],
+  entities: isProduction
+    ? ["dist/entities/**/*.js"]
+    : ["src/entities/**/*.ts"],
 
   // migrations: isProduction
   //   ? ["dist/migrations/**/*.js"]
